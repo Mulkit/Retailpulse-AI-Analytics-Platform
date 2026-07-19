@@ -1,4 +1,7 @@
+
 # RetailPulse: AI-Powered Sales & Retail Analytics Platform
+
+🔗 **Live Demo:** https://retailpulse-ai-analytics-platform.streamlit.app/
 
 Predictive Demand • Customer Segmentation • Churn Analysis • Inventory Optimization
 
