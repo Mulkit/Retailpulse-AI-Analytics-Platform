@@ -1,0 +1,7 @@
+{
+  "model": "hybrid_ensemble",
+  "mape": 6.26,
+  "mae": 18108.78,
+  "rmse": 21937.18,
+  "best_prophet_weight": 0.05
+}

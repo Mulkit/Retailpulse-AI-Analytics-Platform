@@ -1,0 +1,14 @@
+{
+  "feature_drift_share": 1.0,
+  "drifted_features": [
+    "Revenue_roll30_mean",
+    "Revenue_roll7_mean",
+    "UnitsSold",
+    "Orders",
+    "Revenue"
+  ],
+  "prediction_drift_detected": false,
+  "prediction_ks_pvalue": 0.1303,
+  "alert_threshold": 0.3,
+  "retraining_recommended": true
+}

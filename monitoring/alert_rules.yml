@@ -1,0 +1,29 @@
+groups:
+  - name: retailpulse_model_health
+    rules:
+      - alert: ForecastMAPEAboveTarget
+        expr: retailpulse_forecast_mape_percent > 12
+        for: 10m
+        labels:
+          severity: critical
+        annotations:
+          summary: "RetailPulse forecast MAPE above 12% target"
+          description: "Hybrid forecast MAPE is {{ $value }}%, above the 12% acceptance target."
+
+      - alert: ChurnModelAUCBelowTarget
+        expr: retailpulse_churn_auc_roc < 0.88
+        for: 10m
+        labels:
+          severity: critical
+        annotations:
+          summary: "RetailPulse churn model AUC-ROC below 0.88 target"
+          description: "Churn model AUC-ROC is {{ $value }}, below the 0.88 acceptance target."
+
+      - alert: DataDriftDetected
+        expr: retailpulse_drift_retrain_recommended == 1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "RetailPulse data drift detected — retraining recommended"
+          description: "{{ $value | humanizePercentage }} of monitored features have drifted."

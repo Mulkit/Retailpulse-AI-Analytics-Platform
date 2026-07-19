@@ -1,0 +1,8 @@
+{
+  "auc_roc": 0.9651,
+  "precision_at_top20": 1.0,
+  "churn_rate": 0.3496,
+  "model": "xgboost_churn",
+  "cutoff_date": "2024-07-01",
+  "churn_window_days": 90
+}

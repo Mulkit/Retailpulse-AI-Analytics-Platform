@@ -1,0 +1,100 @@
+{
+  "title": "RetailPulse — Model Health",
+  "uid": "retailpulse-model-health",
+  "timezone": "browser",
+  "refresh": "30s",
+  "schemaVersion": 39,
+  "panels": [
+    {
+      "title": "Forecast MAPE (%)",
+      "type": "gauge",
+      "gridPos": { "x": 0, "y": 0, "w": 6, "h": 8 },
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "steps": [
+              { "value": 0, "color": "green" },
+              { "value": 12, "color": "red" }
+            ]
+          },
+          "max": 25,
+          "min": 0
+        }
+      },
+      "targets": [{ "expr": "retailpulse_forecast_mape_percent", "refId": "A" }]
+    },
+    {
+      "title": "Churn Model AUC-ROC",
+      "type": "gauge",
+      "gridPos": { "x": 6, "y": 0, "w": 6, "h": 8 },
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "steps": [
+              { "value": 0, "color": "red" },
+              { "value": 0.88, "color": "green" }
+            ]
+          },
+          "max": 1,
+          "min": 0
+        }
+      },
+      "targets": [{ "expr": "retailpulse_churn_auc_roc", "refId": "A" }]
+    },
+    {
+      "title": "Churn Precision@Top-20%",
+      "type": "gauge",
+      "gridPos": { "x": 12, "y": 0, "w": 6, "h": 8 },
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "steps": [
+              { "value": 0, "color": "red" },
+              { "value": 0.75, "color": "green" }
+            ]
+          },
+          "max": 1,
+          "min": 0
+        }
+      },
+      "targets": [{ "expr": "retailpulse_churn_precision_top20", "refId": "A" }]
+    },
+    {
+      "title": "Feature Drift Share",
+      "type": "gauge",
+      "gridPos": { "x": 18, "y": 0, "w": 6, "h": 8 },
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "steps": [
+              { "value": 0, "color": "green" },
+              { "value": 0.3, "color": "orange" },
+              { "value": 0.6, "color": "red" }
+            ]
+          },
+          "max": 1,
+          "min": 0
+        }
+      },
+      "targets": [{ "expr": "retailpulse_drift_feature_share", "refId": "A" }]
+    },
+    {
+      "title": "Forecast MAPE Over Time",
+      "type": "timeseries",
+      "gridPos": { "x": 0, "y": 8, "w": 12, "h": 8 },
+      "targets": [{ "expr": "retailpulse_forecast_mape_percent", "refId": "A" }]
+    },
+    {
+      "title": "Churn AUC-ROC Over Time",
+      "type": "timeseries",
+      "gridPos": { "x": 12, "y": 8, "w": 12, "h": 8 },
+      "targets": [{ "expr": "retailpulse_churn_auc_roc", "refId": "A" }]
+    },
+    {
+      "title": "Retraining Recommended (1=yes)",
+      "type": "stat",
+      "gridPos": { "x": 0, "y": 16, "w": 24, "h": 4 },
+      "targets": [{ "expr": "retailpulse_drift_retrain_recommended", "refId": "A" }]
+    }
+  ]
+}

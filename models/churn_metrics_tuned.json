@@ -1,0 +1,15 @@
+{
+  "auc_roc": 0.9694,
+  "precision_at_top20": 1.0,
+  "model": "xgboost_churn_tuned",
+  "best_params": {
+    "n_estimators": 100,
+    "max_depth": 3,
+    "learning_rate": 0.03452410379496878,
+    "subsample": 0.7417902398612948,
+    "colsample_bytree": 0.9185285234391588,
+    "reg_alpha": 0.010853163997977734,
+    "reg_lambda": 0.0021708154702501595
+  },
+  "cv_auc": 0.9576
+}

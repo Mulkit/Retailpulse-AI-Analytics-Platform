@@ -1,0 +1,23 @@
+
+WEEK 1 CHECKPOINT — RetailPulse: AI-Powered Sales & Retail Analytics Platform
+======================================================================
+
+Data Pipeline:
+  - Raw transactions generated : 471,418 rows
+  - Cleaned transactions       : 420,663 rows
+  - Customers segmented        : 4,955
+
+Baseline Models (Day 5-6):
+  - Prophet MAPE : 8.52%
+  - LSTM MAPE    : 6.27%
+  - Both models beat the <=12% MAPE target from the F-03 requirement.
+
+Segmentation (Day 3):
+  - 4 business segments identified via K-Means
+  - DBSCAN cross-check applied for outlier detection
+
+MLOps:
+  - 2 runs logged in MLflow experiment 'RetailPulse-Forecasting'
+
+Status: Week 1 objectives complete. Proceeding to Week 2 (hybrid ensemble,
+churn prediction, inventory optimization).

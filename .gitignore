@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# Data (large generated files — regenerate via notebooks/01_eda.ipynb)
+data/raw/*.csv
+data/processed/*.csv
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+
+# Models (regenerate via notebooks 05, 06, 09, 11)
+models/*.pt
+models/*.joblib
+
+# MLflow
+mlruns/
+notebooks/mlruns/
+
+# Environment
+.env
+venv/
+.venv/
+
+# OS
+.DS_Store

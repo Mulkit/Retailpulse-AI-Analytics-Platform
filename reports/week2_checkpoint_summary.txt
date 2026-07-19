@@ -1,0 +1,25 @@
+
+WEEK 2 CHECKPOINT — RetailPulse: AI-Powered Sales & Retail Analytics Platform
+======================================================================
+
+Forecasting (Day 5-8):
+  - Hybrid ensemble MAPE : 6.26%  (target <=12%, met)
+  - Blend weight         : Prophet=0.05, LSTM=0.95
+
+Churn Prediction (Day 9, 11):
+  - Tuned AUC-ROC        : 0.9694  (target >=0.88, met)
+  - Precision@Top-20%    : 1.0000  (target >=0.75, met)
+  - Optuna trials run    : 40 (CV AUC 0.9573)
+
+Inventory Optimization (Day 10):
+  - SKUs analyzed        : 120
+  - SKUs needing reorder : 42
+  - ABC breakdown        : {'A': 67, 'B': 27, 'C': 26}
+
+MLOps (Day 12-13):
+  - Drift detected       : True
+  - Automated retrain run: models promoted = ['prophet']
+  - Total MLflow runs    : 6 across 3 experiments
+
+Status: Week 2 objectives complete. Proceeding to Week 3
+(Streamlit dashboard + analytics layer).

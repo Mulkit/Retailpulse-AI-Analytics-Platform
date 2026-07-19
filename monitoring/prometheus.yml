@@ -1,0 +1,22 @@
+global:
+  scrape_interval: 30s
+  evaluation_interval: 30s
+
+scrape_configs:
+  - job_name: "retailpulse-model-metrics"
+    static_configs:
+      - targets: ["model-metrics-exporter:9105"]
+        labels:
+          service: "retailpulse"
+          component: "model-monitoring"
+
+  - job_name: "retailpulse-dashboard"
+    metrics_path: /_stcore/health
+    static_configs:
+      - targets: ["retailpulse-dashboard:8501"]
+        labels:
+          service: "retailpulse"
+          component: "dashboard"
+
+rule_files:
+  - "alert_rules.yml"

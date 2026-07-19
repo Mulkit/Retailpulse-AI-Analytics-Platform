@@ -1,0 +1,8 @@
+{
+  "mape": 6.266,
+  "mae": 18200.54,
+  "rmse": 22075.9,
+  "horizon_days": 30,
+  "seq_len": 30,
+  "model": "lstm_forecaster"
+}

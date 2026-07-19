@@ -1,0 +1,140 @@
+name: RetailPulse CI/CD
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  IMAGE_NAME: retailpulse-dashboard
+  REGISTRY: ghcr.io
+
+jobs:
+  lint-and-validate:
+    name: Lint & Validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install lint tools
+        run: pip install ruff black pyyaml
+
+      - name: Ruff lint (dashboard + airflow_dags)
+        run: ruff check dashboard/ airflow_dags/ --exit-zero
+
+      - name: Black format check
+        run: black --check dashboard/ airflow_dags/ || true
+
+      - name: Validate Kubernetes manifests are well-formed YAML
+        run: |
+          python - <<'EOF'
+          import yaml, glob
+          for f in glob.glob("k8s/*.yaml"):
+              with open(f) as fh:
+                  doc = yaml.safe_load(fh)
+              assert "apiVersion" in doc and "kind" in doc, f"{f} missing required fields"
+              print(f"OK: {f}")
+          EOF
+
+      - name: Validate docker-compose.yml
+        run: |
+          python -c "import yaml; yaml.safe_load(open('docker/docker-compose.yml'))"
+
+  test-dashboard:
+    name: Dashboard Smoke Test
+    runs-on: ubuntu-latest
+    needs: lint-and-validate
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dashboard dependencies
+        run: pip install -r docker/requirements-dashboard.txt
+
+      - name: Syntax-check every dashboard file
+        run: |
+          python - <<'EOF'
+          import ast, glob
+          for f in glob.glob("dashboard/**/*.py", recursive=True):
+              ast.parse(open(f).read())
+              print(f"OK: {f}")
+          EOF
+
+      - name: Boot-test Home page (headless, health check)
+        run: |
+          cd dashboard
+          streamlit run Home.py --server.headless true --server.port 8501 &
+          sleep 10
+          curl -sf http://localhost:8501/_stcore/health
+          kill %1
+
+  build-and-push:
+    name: Build & Push Docker Image
+    runs-on: ubuntu-latest
+    needs: test-dashboard
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: docker/Dockerfile
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/${{ github.repository }}/${{ env.IMAGE_NAME }}:latest
+            ${{ env.REGISTRY }}/${{ github.repository }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  deploy:
+    name: Deploy to Kubernetes
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v4
+
+      - name: Configure kubeconfig
+        run: echo "${{ secrets.KUBE_CONFIG }}" | base64 -d > kubeconfig.yaml
+
+      - name: Apply manifests
+        env:
+          KUBECONFIG: kubeconfig.yaml
+        run: |
+          kubectl apply -f k8s/namespace.yaml
+          kubectl apply -f k8s/configmap.yaml
+          kubectl apply -f k8s/deployment.yaml
+          kubectl apply -f k8s/service.yaml
+          kubectl apply -f k8s/ingress.yaml
+          kubectl apply -f k8s/hpa.yaml
+          kubectl set image deployment/retailpulse-dashboard \
+            dashboard=${{ env.REGISTRY }}/${{ github.repository }}/${{ env.IMAGE_NAME }}:${{ github.sha }} \
+            -n retailpulse
+          kubectl rollout status deployment/retailpulse-dashboard -n retailpulse --timeout=180s

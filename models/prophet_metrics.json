@@ -1,0 +1,7 @@
+{
+  "mape": 8.542,
+  "mae": 23613.67,
+  "rmse": 28851.96,
+  "horizon_days": 30,
+  "model": "prophet_baseline"
+}
