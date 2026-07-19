@@ -3,15 +3,17 @@ __pycache__/
 *.pyc
 .ipynb_checkpoints/
 
-# Data (large generated files — regenerate via notebooks/01_eda.ipynb)
-data/raw/*.csv
-data/processed/*.csv
-!data/raw/.gitkeep
-!data/processed/.gitkeep
+# Large raw data — not needed for the deployed dashboard (regenerate via notebooks/01_eda.ipynb)
+data/raw/sales_transactions.csv
+data/raw/customers_master.csv
+data/raw/inventory_snapshots.csv
 
-# Models (regenerate via notebooks 05, 06, 09, 11)
+# Model binaries — not read by the dashboard, only by training notebooks
 models/*.pt
 models/*.joblib
+models/prophet_model.json
+models/churn_xgboost.json
+models/churn_xgboost_tuned.json
 
 # MLflow
 mlruns/
